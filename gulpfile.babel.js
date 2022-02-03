@@ -100,6 +100,15 @@ const buildJS = () => {
                     {
                         test: /\.html$/,
                         use: 'raw-loader'
+                    },
+                    {
+                        test: /\.csv$/,
+                        loader: 'csv-loader',
+                        options: {
+                          dynamicTyping: true,
+                          header: true,
+                          skipEmptyLines: true
+                        }
                     }
                 ]
             },

@@ -1,0 +1,83 @@
+// @import "enhanced_fonts"; // for when you need special font features 
+@import "fonts";
+@import "mq";
+@import "palette";
+@import "dcr_enhancer"; //remove this line when using immersive weighting or the article template
+@import "scrolly";
+
+.interactive-atom {
+    margin: 0;
+    padding: 0;
+}
+
+.gv-wrapper {
+    background: #fff;
+    border-top: 1px solid #dcdcdc;
+    border-bottom: 1px solid #dcdcdc;
+}
+
+/*----- App fixes -----*/
+.ios, .android {
+    .element--immersive {
+        width: 100vw !important;
+        position: relative !important;
+        left: 50% !important;
+        right: 50% !important;
+        margin-left: -50vw !important;
+        margin-right: -50vw !important;
+    }
+    
+    //remove dark mode padding in apps
+    figure.element.element-atom, figure.interactive.interactive-atom.interactive--loading {
+        padding: 0 !important;
+    }
+}
+
+/*----- DCR live Corrections -----*/
+.element-immersive { //this fixes the incorrect dcr immersive margins and width
+  width: 100vw !important;
+  position: relative !important;
+  left: 50% !important;
+  right: 50% !important;
+  margin-left: -50vw !important;
+  margin-right: -50vw !important;
+
+  @include mq(tablet) {
+      transform: translateX(10px);
+  }
+
+  @include mq(leftCol) {
+      transform: translateX(0);
+  }
+}
+/* ------------------------- */
+
+.raster{
+  opacity: .3;
+}
+
+.border{
+  fill:none;
+  stroke:#929297;
+  stroke-width:1px;
+}
+
+.road{
+  fill:none;
+  stroke:#B3B3B4;
+  stroke-width:.25px;
+}
+
+.water{
+  fill:#CDE2EC;
+  stroke:#82B6D0;
+}
+
+.disputed{
+  fill:#CC0A11;
+  opacity:.25;
+}
+
+.Other{fill:red;}
+.Tanks{fill:yellow;}
+.Air{fill:green;}
