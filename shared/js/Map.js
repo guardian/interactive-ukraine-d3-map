@@ -60,14 +60,6 @@ export default class Map {
 		.attr("height", raster_height)
 		.attr("transform", "translate(" + rtranslate_x + ", " + rtranslate_y + ")");
 
-/*		node.append("path")
-		.datum(topojson.mesh(this.feature, this.address, (a,b) =>  a === b ))
-		.attr("class","continent")
-		.attr("d", this.path)
-		.style('fill', 'none')
-		.style('stroke', 'green')
-		.style('stroke-width', '2px')*/
-
 	}
 
 
@@ -79,8 +71,7 @@ export default class Map {
 		.attr("d", this.path)
 	}
 
-	makeDots(node, radius = 5, object = [{name:'', coordinates:[], type:'city', class: 'className'}])
-	{
+	makeDots(node, radius = 5, object = [{name:'', coordinates:[], type:'city', class: 'className'}]){
 
 		object.forEach(o => {
 
@@ -108,14 +99,22 @@ export default class Map {
  
 
 		})
-		/*node.selectAll('circle')
-		.data(object)
-		.enter()
-		.append('circle')
-		.attr('class', d => d.type)
-		.attr('r', radius)
-		.attr('cx', d => this.projection(d.coordinates)[0])
-		.attr('cy', d => this.projection(d.coordinates)[1])*/
+	}
+
+	makeLabels(node, object = [{name:'', coordinates:[], type:'city', class: 'className'}]){
+
+		object.forEach(o => {
+
+			switch(o.type){
+				case 'country':
+				break;
+				case '':
+				break;
+			}
+
+
+		})
+
 	}
 }
 

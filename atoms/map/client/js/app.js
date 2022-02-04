@@ -1,11 +1,12 @@
 import * as d3 from 'd3'
 import * as topojson from 'topojson'
-import countries from 'assets/countries.json'
+/*import countries from 'assets/countries.json'
 import sightings from 'assets/sightings.json'
 import roads from 'assets/roads-buffer.json'
 import disputed from 'assets/disputed.json'
-import dnieper from 'assets/dnieper.json'
+import dnieper from 'assets/dnieper.json'*/
 import Map from 'shared/js/Map'
+import geo from 'assets/output.json'
 import ScrollyTeller from "shared/js/scrollyteller";
 import deployments from 'shared/data/units.csv'
 
@@ -32,11 +33,23 @@ const svg = d3.select('.gv-wrapper').append("svg")
 .classed("svg-content", true);
 
 
-const map = new Map(width, height, countries, countries.objects.countries, isMobile ? 7 : 8.5)
+const map = new Map(width, height, geo, geo.objects.countries, isMobile ? 7 : 8.5)
 
 map.makeBackground(svg, `<%= path %>/ukraine.png`)
 
-map.makePath(svg, topojson.feature(dnieper,dnieper.objects.dnieper), 'water')
+map.makePath(svg, topojson.feature(geo,geo.objects.water), 'water')
+
+map.makePath(svg, topojson.mesh(geo, geo.objects.boundaries), 'border')
+
+map.makePath(svg, topojson.feature(geo, geo.objects.disputed), 'disputed')
+
+map.makePath(svg, topojson.mesh(geo, geo.objects.roads), 'road')
+
+map.makeDots(svg, 3, cities)
+
+map.makeDots(svg, isMobile ? 6 : 3, troops)
+
+/*
 
 map.makePath(svg, topojson.feature(disputed, disputed.objects.disputed), 'disputed')
 
@@ -47,7 +60,7 @@ map.makePath(svg, topojson.mesh(roads, roads.objects['roads-buffer']), 'road')
 map.makeDots(svg, 3, cities)
 
 map.makeDots(svg, isMobile ? 6 : 3, troops)
-
+*/
 const scrolly = new ScrollyTeller({
 	parent: document.querySelector("#scrolly-1"),
     triggerTop: .5, // percentage from the top of the screen that the trigger should fire
