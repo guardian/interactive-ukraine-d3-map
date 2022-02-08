@@ -13,46 +13,39 @@ export default class Map {
 		this.feature = feature;
 		this.address = address;
 		this.scale = scale;
+		this.image;
+		this.b;
+		this.s;
+		this.t;
 	}
 
 	makeBackground(node, image) {
 
 		//based on https://datawanderings.com/2020/08/08/raster-backgrounds/   
 
-		const b = this.path.bounds(topojson.feature(this.feature, this.address));
+		this.b = this.path.bounds(topojson.feature(this.feature, this.address));
 
 		// scale
-		const s = this.scale / Math.min((b[1][0] - b[0][0]) / this.width, (b[1][1] - b[0][1]) / this.height);  
+		this.s = this.scale / Math.min((this.b[1][0] - this.b[0][0]) / this.width, (this.b[1][1] - this.b[0][1]) / this.height);  
 		//const s = projection.scale()
 
 		// transform
-		const t = [(this.width - s * (b[1][0] + b[0][0])) / 2, (this.height - s * (b[1][1] + b[0][1])) / 2];
+		this.t = [(this.width - this.s * (this.b[1][0] + this.b[0][0])) / 2, (this.height - this.s * (this.b[1][1] + this.b[0][1])) / 2];
 
 		// update projection
 		this.projection
-		.scale(s)
-		.translate(t)
+		.scale(this.s)
+		.translate(this.t)
 
 		// scale and postion
-		const raster_width = (b[1][0] - b[0][0]) * s;
-		const raster_height = (b[1][1] - b[0][1]) * s;
+		const raster_width = (this.b[1][0] - this.b[0][0]) * this.s;
+		const raster_height = (this.b[1][1] - this.b[0][1]) * this.s;
 
 		const rtranslate_x = (this.width - raster_width) / 2;
 		const rtranslate_y = (this.height - raster_height) / 2;
 
-		let defs = node.append('defs')
 
-		defs
-		.append('clipPath')
-		.attr("id", "clip")
-		.attr("width", raster_width)
-		.attr("height", raster_height)
-		.attr("transform", "translate(" + -rtranslate_x + ", " + -rtranslate_y + ")")
-		.append('path')
-		.datum(topojson.merge(this.feature, this.address.geometries))
-		.attr("d", this.path)
-
-		node.append("image")
+		this.image = node.append("image")
 		.attr('class', 'raster')
 		.attr('clip-path', 'url(#clip)')
 		.attr("xlink:href", image)
@@ -62,7 +55,6 @@ export default class Map {
 
 	}
 
-
 	makePath(node, datum, className = null){
 
 		node.append("path")
@@ -71,7 +63,53 @@ export default class Map {
 		.attr("d", this.path)
 	}
 
-	makeDots(node, radius = 5, object = [{name:'', coordinates:[], type:'city', class: 'className'}]){
+
+	scaleImage(scale, callback = null){
+
+		const s = scale / Math.min((this.b[1][0] - this.b[0][0]) / this.width, (this.b[1][1] - this.b[0][1]) / this.height);  
+		//const s = projection.scale()
+
+		// transform
+		const t = [(this.width - s * (this.b[1][0] + this.b[0][0])) / 2, (this.height - s * (this.b[1][1] + this.b[0][1])) / 2];
+
+		// update projection
+		this.projection
+		.scale(s)
+		.translate(t)
+
+		// scale and postion
+		const raster_width = (this.b[1][0] - this.b[0][0]) * s;
+		const raster_height = (this.b[1][1] - this.b[0][1]) * s;
+
+		const rtranslate_x = (this.width - raster_width) / 2;
+		const rtranslate_y = (this.height - raster_height) / 2;
+
+		this.image
+		.transition()
+		.duration(500)
+		.attr("width", raster_width)
+		.attr("height", raster_height)
+		.attr("transform", "translate(" + rtranslate_x + ", " + rtranslate_y + ")");
+
+		d3.selectAll('path')
+		.transition()
+		.duration(500)
+		.attr("d", this.path)
+		.on('end', callback != null ? callback('end') : null )
+
+
+	}
+
+	scalePath(){
+
+		
+
+	}
+
+
+	
+
+	/*makeDots(node, radius = 5, object = [{name:'', coordinates:[], type:'city', class: 'className'}]){
 
 		object.forEach(o => {
 
@@ -106,9 +144,12 @@ export default class Map {
 		object.forEach(o => {
 
 			switch(o.type){
+				
 				case 'country':
 				break;
-				case '':
+				case 'capital':
+				break;
+				case 'city':
 				break;
 			}
 
@@ -116,6 +157,11 @@ export default class Map {
 		})
 
 	}
+
+	getPoints(longLat){
+
+		return this.projection(longLat)
+	}*/
 }
 
 
